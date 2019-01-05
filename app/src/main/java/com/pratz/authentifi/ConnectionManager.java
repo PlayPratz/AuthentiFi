@@ -18,24 +18,30 @@ public class ConnectionManager {
 
 	public interface VolleyCallback {
 		void onSuccessResponse(String result);
+
+		void onErrorResponse(VolleyError error);
 	}
 
 	public static void sendData(final String requestBody, RequestQueue requestQueue, String URL, final VolleyCallback volleyCallback) {
 
+
+		Log.i("Kaldon-request", requestBody);
 		StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 			@Override
 			public void onResponse(String response) {
-				Log.i("KALDONk", response);
+				Log.i("KALDON-response", response);
 				volleyCallback.onSuccessResponse(response);
 			}
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
-				Log.e("KALDONe", error.toString());
+				Log.e("KALDON-error", error.toString());
+				volleyCallback.onErrorResponse(error);
 			}
 		}) {
 			@Override
 			protected Response<String> parseNetworkResponse(NetworkResponse response) {
+				Log.i("Kaldon-net", Integer.toString(response.statusCode));
 				String parsed;
 				try {
 					parsed = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
@@ -61,8 +67,9 @@ public class ConnectionManager {
 			}
 		};
 
+
 		stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-				100000,
+				5000,
 				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
 				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

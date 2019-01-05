@@ -1,28 +1,24 @@
 package com.pratz.authentifi.SellActivity;
 
-import android.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-
-import java.io.BufferedReader;
-import java.util.ArrayList;
 
 import com.pratz.authentifi.R;
 
-public class SellActivity extends AppCompatActivity {
+public class BuyActivity extends AppCompatActivity {
 
-	int i=0;
-
-	static String qrcode;
 	Integer fragmentContainer;
 	FragmentManager fragmentManager;
 	Button nextButton;
+
+	static String qrcode;
+
+	int i=0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +28,7 @@ public class SellActivity extends AppCompatActivity {
 		fragmentContainer = (R.id.fragment_container);
 		fragmentManager = getSupportFragmentManager();
 
-		nextScreen();
-
 		nextButton = (Button) findViewById(R.id.button_next);
-		nextButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				nextScreen();
-			}
-		});
-
 		ImageButton closeButton = (ImageButton) findViewById(R.id.close_button);
 
 		closeButton.setOnClickListener(new View.OnClickListener() {
@@ -51,27 +38,45 @@ public class SellActivity extends AppCompatActivity {
 			}
 		});
 
+		nextButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				nextScreen();
+			}
+		});
+
+		nextScreen();
+
+
 
 	}
 
 	private void nextScreen() {
-
-		Fragment fragment;
+		Fragment fragment=null;
 
 		switch(i) {
 			case 0:
+				//instructions
 				fragment = new SellStep0();
 				break;
 
 			case 1:
-				fragment = new SellStep1();
+				//nextButton.setVisibility(View.INVISIBLE);
+				// /buy -> QRCode, email
+				fragment = new BuyStep1();
+				break;
+
+			case 2:
+				//buyerConfirm
+				fragment = new BuyStep2();
 				break;
 
 			default:
-				nextButton.setVisibility(View.INVISIBLE);
-				fragment = new SellStep2();
-		}
+				fragment = new BuyStep3();
 
+				//getProductDetails QRCode prodCode
+
+		}
 		i++;
 
 		fragmentManager.beginTransaction()

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -22,20 +23,23 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.pratz.authentifi.SellActivity.SellActivity;
+import com.pratz.authentifi.User.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 
 public class ProductPage extends AppCompatActivity {
 
 	TextView productCode, productBrand, productName, productDescription, productManufacturer, productStatus, productStatusDescription;
-	ImageButton productImage, productStatusImage;
+	ImageButton productImage, productStatusImage, productSell, productStolen;
 	ConstraintLayout productOwnerLayout;
 
 	String prodCode;
-	String textAddress = "http://192.168.43.24";
 
 	//int i=3;
 	//ImageButton testButton, testButton1;
@@ -56,7 +60,10 @@ public class ProductPage extends AppCompatActivity {
 		productStatusDescription = (TextView) findViewById(R.id.product_status_description);
 		productImage = (ImageButton) findViewById(R.id.product_image);
 		productStatusImage = (ImageButton) findViewById(R.id.product_status_image);
-		productOwnerLayout = findViewById(R.id.owner_section);
+		productOwnerLayout = (ConstraintLayout) findViewById(R.id.owner_section);
+
+		productSell = (ImageButton) findViewById(R.id.product_sell_image);
+
 
 
 
@@ -67,6 +74,17 @@ public class ProductPage extends AppCompatActivity {
 
 		prodCode = bundle.getString("code");
 		productCode.setText(prodCode);
+
+		productSell.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ProductPage.this, SellActivity.class);
+				intent.putExtra("code", prodCode);
+				startActivity(intent);
+				finish();
+			}
+		});
+
 
 		//Get data from server
 		try {
@@ -115,17 +133,15 @@ public class ProductPage extends AppCompatActivity {
 	private void getData() throws JSONException {
 
 		RequestQueue requestQueue = Volley.newRequestQueue(ProductPage.this);
-		String URL = textAddress+":8080/scan";
+		String URL = MainActivity.address+"/scan";
 		final JSONObject jsonBody = new JSONObject();
 		jsonBody.put("code", prodCode);
 		final String requestBody = jsonBody.toString();
 		ConnectionManager.sendData(requestBody, requestQueue, URL, new ConnectionManager.VolleyCallback() {
 			@Override
 			public void onSuccessResponse(String result) {
-				Log.i("KALDONj", result);
 				try {
 					JSONObject jsonObject = new JSONObject(result);
-					Log.i("KALDONjs", jsonObject.toString());
 
 					//Set data
 					productName.setText(jsonObject.getString("model"));
@@ -156,6 +172,16 @@ public class ProductPage extends AppCompatActivity {
 				}
 
 
+			}
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+
+				Toast toast = Toast.makeText(ProductPage.this,
+						"Could not connect to server, please try again.",
+						Toast.LENGTH_LONG);
+
+				toast.show();
 			}
 		});
 	}

@@ -24,6 +24,7 @@ import static android.media.MediaRecorder.VideoSource.CAMERA;
 public class MainActivity extends AppCompatActivity {
 
 	FragmentManager fragmentManager;
+	public static String email, address;
 
 	private void askForPermission(String permission, Integer requestCode) {
 		if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		askForPermission(Manifest.permission.CAMERA, CAMERA);
+
+		email = getIntent().getExtras().getString("email");
+		address = getIntent().getExtras().getString("address");
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -87,12 +91,15 @@ public class MainActivity extends AppCompatActivity {
 				fragmentManager.beginTransaction()
 						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 						.replace(fragmentContainer, fragment)
+					//	.show(fragment)
+					//	.hide(fragmentManager.findFragmentById(fragmentContainer))
 						.commit();
 				return true;
 			}
 		});
 
 		//set screen at boot
+		//fragmentManager.beginTransaction().add(fragmentContainer, Profile).hide(Profile).commit();
 		fragmentManager.beginTransaction().add(fragmentContainer, Assets).commit();
 	}
 

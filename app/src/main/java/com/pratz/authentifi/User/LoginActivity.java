@@ -9,8 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.pratz.authentifi.Assets.Asset;
 import com.pratz.authentifi.ConnectionManager;
@@ -32,6 +34,7 @@ import java.io.OutputStreamWriter;
 public class LoginActivity extends AppCompatActivity {
 
 	String filename = "logincredentials.aut";
+	static String textAddress;
 	User user;
 
 	EditText email, password, address;
@@ -61,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 			email.setText(bufferedReader.readLine());
 			password.setText(bufferedReader.readLine());
+			address.setText(bufferedReader.readLine());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -68,24 +72,25 @@ public class LoginActivity extends AppCompatActivity {
 		}
 
 
-		address.setText("192.168.43.24");
 
 		submit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 
+				/*
 				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 				startActivity(intent);
 				finish();
+				*/
 
-				/*
+				submit.setEnabled(false);
 				Log.d("John", address.getText().toString());
 				final String textEmail = email.getText().toString();
 				final String textPass = password.getText().toString();
-				String textAddress = address.getText().toString();
+				textAddress = address.getText().toString();
 
 				RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
-				String URL = "http://"+textAddress+":8080/login";
+				String URL = textAddress+"/login";
 				JSONObject jsonObject = new JSONObject();
 				try {
 					jsonObject.put("email", textEmail);
@@ -102,6 +107,8 @@ public class LoginActivity extends AppCompatActivity {
 					public void onSuccessResponse(String result) {
 						Log.i("KALDONi", result);
 						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+						intent.putExtra("email", textEmail);
+						intent.putExtra("address", textAddress);
 						startActivity(intent);
 
 
@@ -112,6 +119,8 @@ public class LoginActivity extends AppCompatActivity {
 							outputStreamWriter.write(user.getEmail());
 							outputStreamWriter.append("\n");
 							outputStreamWriter.append(user.getPassword());
+							outputStreamWriter.append("\n");
+							outputStreamWriter.append(address.getText());
 							outputStreamWriter.flush();
 							outputStreamWriter.close();
 
@@ -119,9 +128,21 @@ public class LoginActivity extends AppCompatActivity {
 							e.printStackTrace();
 						}
 
+
 						finish();
 					}
-				});*/
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						Toast toast = Toast.makeText(LoginActivity.this,
+								"Could not login, please try again.",
+								Toast.LENGTH_LONG);
+
+						toast.show();
+
+						submit.setEnabled(true);
+					}
+				});
 			}
 
 		});

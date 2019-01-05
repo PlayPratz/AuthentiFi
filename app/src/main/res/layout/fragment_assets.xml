@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Assets.AssetsFragment"
-    android:background="@color/colorPrimaryDark">
+    tools:context=".Assets.AssetsFragment">
+    <!--android:background="@color/colorPrimaryDark"-->
 
-    <!-- TODO: Update blank fragment layout -->
+
+    <Button
+        android:id="@+id/buy"
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorPrimary"
+        android:text="BUY ASSET"
+        android:textColor="@color/LightGray"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 
 
     <android.support.v7.widget.RecyclerView
@@ -22,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:layout_constraintTop_toBottomOf="@+id/buy"
         android:background="@color/BackgroundLight">
 
     </android.support.v7.widget.RecyclerView>
@@ -36,7 +50,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/BackgroundLight"
+            android:background="@color/LightGray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -44,5 +58,17 @@
         </SearchView>
 
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/assetrecycler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/assetrecycler" />
 
 </android.support.constraint.ConstraintLayout>
+
+

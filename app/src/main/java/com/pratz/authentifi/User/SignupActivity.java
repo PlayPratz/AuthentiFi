@@ -8,8 +8,10 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.pratz.authentifi.ConnectionManager;
 import com.pratz.authentifi.R;
@@ -48,11 +50,13 @@ public class SignupActivity extends AppCompatActivity {
 		passconfirm.setHint("Confirm Password");
 		address.setHint("Server Address");
 
-		address.setText("192.168.43.24");
+		address.setText(LoginActivity.textAddress);
 
 		submit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+
+				submit.setEnabled(false);
 
 				try {
 					signupValidator();
@@ -116,6 +120,18 @@ public class SignupActivity extends AppCompatActivity {
 				@Override
 				public void onSuccessResponse(String result) {
 					finish();
+				}
+
+				@Override
+				public void onErrorResponse(VolleyError error) {
+
+					Toast toast = Toast.makeText(SignupActivity.this,
+							"Could not connect to server, please try again.",
+							Toast.LENGTH_LONG);
+
+					toast.show();
+
+					submit.setEnabled(true);
 				}
 			});
 		}

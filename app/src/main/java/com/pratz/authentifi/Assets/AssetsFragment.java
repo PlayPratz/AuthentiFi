@@ -1,10 +1,12 @@
 package com.pratz.authentifi.Assets;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,13 +15,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.pratz.authentifi.ConnectionManager;
+import com.pratz.authentifi.MainActivity;
 import com.pratz.authentifi.ProductPage;
 import com.pratz.authentifi.R;
+import com.pratz.authentifi.SellActivity.BuyActivity;
 import com.pratz.authentifi.User.LoginActivity;
 
 import org.json.JSONArray;
@@ -27,6 +35,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static java.lang.Thread.sleep;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -36,8 +48,11 @@ public class AssetsFragment extends Fragment {
 	List<Asset> assetList = new ArrayList<Asset>();
 	RecyclerView.Adapter mAdapter;
 
+	RecyclerView mRecyclerView;
+	ProgressBar progressBar;
+	Button buyItem;
 
-	String textAddress = "192.168.43.24";
+	String textAddress;
 
 	public AssetsFragment() {
 		// Required empty public constructor
@@ -55,26 +70,14 @@ public class AssetsFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 
 
-		/*String shit[] = {"Java", "Should", "Die", "Because", "OOP", "Sucks", "So", "Hard", "That", "I", "Would", "Rather",
-				"Use", "C", "Or", "Python", "Java", "Should", "Die", "Because", "OOP", "Sucks", "So", "Hard", "That", "I",
-				"Would", "Rather", "Use", "C", "Or", "Python"};*/
-
 		Asset asset = new Asset("somecode", "Nike", "Cloudfoam");
+		assetList.add(0, asset);
 
-
-		//ListView listView = (ListView) view.findViewById(R.id.assetrecycler);
-		//ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.listtext, shit);
-		//listView.setAdapter(arrayAdapter);
-
-
-
-
-
+		Log.i("Yolo","Activity created");
 		View view = getView();
 
 		//RecyclerView
-
-		RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.assetrecycler);
+		mRecyclerView = (RecyclerView) view.findViewById(R.id.assetrecycler);
 
 		// use this setting to improve performance if you know that changes
 		// in content do not change the layout size of the RecyclerView
@@ -107,25 +110,48 @@ public class AssetsFragment extends Fragment {
 
 		View view = inflater.inflate(R.layout.fragment_assets, container, false);
 
+		mRecyclerView = (RecyclerView) view.findViewById(R.id.assetrecycler);
+		progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+		progressBar.setVisibility(View.VISIBLE);
+		mRecyclerView.setVisibility(View.INVISIBLE);
+
+
+		buyItem = view.findViewById(R.id.buy);
+
+		buyItem.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("Kaldon_buyclick", "worked?");
+				Intent intent = new Intent(getContext(), BuyActivity.class);
+				ActivityOptions options =
+						ActivityOptions.makeCustomAnimation(getContext(), R.anim.slide_in_right, R.anim.slide_out_left);
+				startActivity(intent, options.toBundle());
+			}
+		});
 
 		Log.d("yolo hi", "Asset got createView()");
 
 		RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
-		String URL = "http://"+textAddress+":8080/myAssets";
+
+		String URL = MainActivity.address+"/myAssets";
 		JSONObject jsonObject = new JSONObject();
 		try {
-			jsonObject.put("email", "pratz@playmax.in");
+			jsonObject.put("email", MainActivity.email);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		catch (Exception e)
-		{}
-		String requestBody = jsonObject.toString();
 
+
+		String requestBody = jsonObject.toString();
+		Log.i("Kaldon-Asset", requestBody);
 
 		ConnectionManager.sendData(requestBody, requestQueue, URL, new ConnectionManager.VolleyCallback() {
 			@Override
 			public void onSuccessResponse(String result) {
 				try {
+					progressBar.setVisibility(View.INVISIBLE);
+					mRecyclerView.setVisibility(View.VISIBLE);
 					JSONArray jsonArray = new JSONArray(result);
 					jsonArray.remove(0);
 					JSONObject tempObject;
@@ -143,6 +169,16 @@ public class AssetsFragment extends Fragment {
 					e.printStackTrace();
 				}
 			}
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+
+				Toast toast = Toast.makeText(getContext(),
+						"Could not connect to server, please try again.",
+						Toast.LENGTH_LONG);
+
+				toast.show();
+			}
 		});
 
 
@@ -156,40 +192,6 @@ public class AssetsFragment extends Fragment {
 	}
 
 
-	//Crap I added
-	/*
-	class AssetAdapter extends com.pratz.authentifi.Assets.AssetAdapter {
-
-		private String mDataset[];
-
-		public AssetAdapter(String[] myDataset) {
-			super(myDataset);
-			mDataset = myDataset;
-		}
-
-		@Override
-		public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			return super.onCreateViewHolder(parent, viewType);
-		}
-
-		@Override
-		public void onBindViewHolder(MyViewHolder holder, final int position) {
-			super.onBindViewHolder(holder, position);
-			holder.mCode.setText(mDataset[position]);
-
-			holder.itemView.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(getActivity(), ProductPage.class);
-					Bundle bundle = new Bundle();
-					bundle.putString("code", mDataset[position]);
-					bundle.putBoolean("isOwner", true);
-					intent.putExtras(bundle);
-					startActivity(intent);
-				}
-			});
-		}
-	}*/
 }
 
 

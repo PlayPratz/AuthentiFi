@@ -120,7 +120,6 @@ public class Viewfind extends AppCompatActivity {
 				final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 				String code = barcodes.valueAt(0).displayValue;
 
-				Log.d("oolala1", code);
 				Intent intent = new Intent(Viewfind.this, ProductPage.class);
 				Bundle bundle = new Bundle();
 				bundle.putString("code", code);
