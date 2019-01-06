@@ -17,11 +17,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.Detector;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 
@@ -61,10 +56,11 @@ public class Viewfind extends AppCompatActivity {
 			}
 		});
 
-		createCameraSource();
+		//createCameraSource();
 
 	}
 
+	/*
 	private void createCameraSource() {
 
 		final BarcodeDetector barcodeDetector = new BarcodeDetector
@@ -81,7 +77,6 @@ public class Viewfind extends AppCompatActivity {
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
 				if (ActivityCompat.checkSelfPermission(Viewfind.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-					// TODO: Consider calling
 					//    ActivityCompat#requestPermissions
 					// here to request the missing permissions, and then overriding
 					//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -120,20 +115,8 @@ public class Viewfind extends AppCompatActivity {
 				final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 				String code = barcodes.valueAt(0).displayValue;
 
-				Intent intent = new Intent(Viewfind.this, ProductPage.class);
-				Bundle bundle = new Bundle();
-				bundle.putString("code", code);
 
-				if(false)
-					bundle.putBoolean("isOwner", true);
-				else
-					bundle.putBoolean("isOwner", false);
-
-				intent.putExtras(bundle);
-				startActivity(intent);
-				barcodeDetector.release();
-				finish();
 			}
 		});
-	}
+	}*/
 }

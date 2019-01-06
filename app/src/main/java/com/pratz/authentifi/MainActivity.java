@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.pratz.authentifi.Assets.AssetsFragment;
 
 import static android.media.MediaRecorder.VideoSource.CAMERA;
@@ -25,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
 	FragmentManager fragmentManager;
 	public static String email, address;
+
+	TextView title;
+	ImageButton profileButton, closeButton;
+	FloatingActionButton scanButton;
 
 	private void askForPermission(String permission, Integer requestCode) {
 		if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -62,11 +72,70 @@ public class MainActivity extends AppCompatActivity {
 
 		final Integer fragmentContainer = R.id.fragment_container;
 		fragmentManager = getSupportFragmentManager();
-		final Fragment Assets = new AssetsFragment();
-		final Fragment Profile = new MyProfileFragment();
+		final Fragment assetsFragment = new AssetsFragment();
+		final Fragment profileFragment = new MyProfileFragment();
+		fragmentManager.beginTransaction().add(fragmentContainer, assetsFragment).commit();
+
+		title = (TextView) findViewById(R.id.title_head);
+		title.setText(R.string.assets_head);
+
+		profileButton = (ImageButton) findViewById(R.id.profile_button);
+		profileButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				profileButton.setVisibility(View.INVISIBLE);
+
+				fragmentManager.beginTransaction()
+						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+						.replace(fragmentContainer, profileFragment)
+						.commit();
+
+				title.setText(R.string.profile_head);
+				closeButton.setVisibility(View.VISIBLE);
+			}
+		});
+
+		closeButton = (ImageButton) findViewById(R.id.close_button);
+		closeButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				closeButton.setVisibility(View.INVISIBLE);
+
+				fragmentManager.beginTransaction()
+						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+						.replace(fragmentContainer, assetsFragment)
+						.commit();
+
+				title.setText(R.string.assets_head);
+
+				profileButton.setVisibility(View.VISIBLE);
+			}
+		});
+
+		scanButton = (FloatingActionButton)findViewById(R.id.scan_button);
+		scanButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+			//	Intent intent = new Intent(MainActivity.this, Viewfind.class);
+			//	startActivity(intent);
+
+				Intent intent = new IntentIntegrator(MainActivity.this)
+						.setPrompt("Scan a product")
+						.setOrientationLocked(false)
+						.createScanIntent();
+
+				intent.putExtra("retailer", "0");
+
+				startActivityForResult(intent, 0);
 
 
-		BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+			}
+		});
+
+
+
+
+		/*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
 		bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -96,11 +165,34 @@ public class MainActivity extends AppCompatActivity {
 						.commit();
 				return true;
 			}
-		});
+		});*/
 
 		//set screen at boot
 		//fragmentManager.beginTransaction().add(fragmentContainer, Profile).hide(Profile).commit();
-		fragmentManager.beginTransaction().add(fragmentContainer, Assets).commit();
+
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		IntentResult scanResult = IntentIntegrator
+				.parseActivityResult(requestCode, resultCode, intent);
+
+		if (scanResult != null) {
+			Log.i("QRcode", scanResult.getContents());
+			// handle scan result
+			intent = new Intent(MainActivity.this, ProductPage.class);
+			Bundle bundle = new Bundle();
+			bundle.putString("code", scanResult.getContents());
+
+			if(false)
+				bundle.putBoolean("isOwner", true);
+			else
+				bundle.putBoolean("isOwner", false);
+
+			intent.putExtras(bundle);
+			startActivity(intent);
+		}
+		// else continue with any other code you need in the method
+
 	}
 
 
@@ -136,10 +228,6 @@ public class MainActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void openCam() {
-		Intent intent = new Intent(this, Viewfind.class);
-		startActivity(intent);
-	}
 
 
 

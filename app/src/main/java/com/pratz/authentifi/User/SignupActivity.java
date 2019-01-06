@@ -51,6 +51,7 @@ public class SignupActivity extends AppCompatActivity {
 		address.setHint("Server Address");
 
 		address.setText(LoginActivity.textAddress);
+		Log.i("kaldon-pass", LoginActivity.textAddress);
 
 		submit.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -107,7 +108,7 @@ public class SignupActivity extends AppCompatActivity {
 		if(flag==0)
 		{
 			RequestQueue requestQueue = Volley.newRequestQueue(SignupActivity.this);
-			String URL = "http://"+textAddress+":8080/signup";
+			String URL = textAddress+"/signup";
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("name", textName);
 			jsonObject.put("email", textEmail);

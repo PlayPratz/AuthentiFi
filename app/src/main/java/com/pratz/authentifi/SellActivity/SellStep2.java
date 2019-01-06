@@ -15,6 +15,7 @@ import com.android.volley.toolbox.Volley;
 import com.pratz.authentifi.ConnectionManager;
 import com.pratz.authentifi.MainActivity;
 import com.pratz.authentifi.R;
+import com.pratz.authentifi.RetailerActivity.MainRetailerActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,16 +38,26 @@ public class SellStep2 extends Fragment {
 
 		View view = inflater.inflate(R.layout.fragment_sell_step2, container, false);
 
+		final String address,email;
+		if(MainActivity.address==null) {
+			email = MainRetailerActivity.email;
+			address = MainRetailerActivity.address;
+		}
+		else {
+			address = MainActivity.address;
+			email = MainActivity.email;
+		}
 		ImageButton confirm = (ImageButton) view.findViewById(R.id.confirm);
 		confirm.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 
-				String URL = MainActivity.address+"/sellerConfirm";
+				String URL = address+"/sellerConfirm";
 				JSONObject jsonObject = new JSONObject();
 				try {
-					jsonObject.put("email", MainActivity.email);
+					jsonObject.put("email", email);
 					jsonObject.put("QRCode", SellActivity.qrcode);
+					jsonObject.put("retailer", getArguments().getString("retailer"));
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

@@ -23,6 +23,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.pratz.authentifi.ConnectionManager;
 import com.pratz.authentifi.MainActivity;
 import com.pratz.authentifi.R;
+import com.pratz.authentifi.RetailerActivity.MainRetailerActivity;
 import com.pratz.authentifi.User.LoginActivity;
 
 import org.json.JSONException;
@@ -51,11 +52,21 @@ public class SellStep1 extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_sell_step1, container, false);
 
 		qrview = view.findViewById(R.id.qrview);
-		String URL = MainActivity.address+"/sell";
+		String address,email;
+		if(MainActivity.address==null) {
+			email = MainRetailerActivity.email;
+			address = MainRetailerActivity.address;
+		}
+		else {
+			address = MainActivity.address;
+			email = MainActivity.email;
+		}
+//		Log.i("Kaldon-ss1", MainRetailerActivity.email);
+		String URL = address+"/sell";
 		JSONObject jsonObject = new JSONObject();
 		try {
 			jsonObject.put("code", getActivity().getIntent().getExtras().getString("code"));
-			jsonObject.put("email", MainActivity.email);
+			jsonObject.put("email", email);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

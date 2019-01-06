@@ -64,6 +64,8 @@ public class BuyActivity extends AppCompatActivity {
 				//nextButton.setVisibility(View.INVISIBLE);
 				// /buy -> QRCode, email
 				fragment = new BuyStep1();
+
+
 				break;
 
 			case 2:

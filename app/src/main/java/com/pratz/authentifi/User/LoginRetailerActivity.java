@@ -14,9 +14,9 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.pratz.authentifi.Assets.Asset;
 import com.pratz.authentifi.ConnectionManager;
 import com.pratz.authentifi.MainActivity;
+import com.pratz.authentifi.RetailerActivity.MainRetailerActivity;
 import com.pratz.authentifi.R;
 
 import org.json.JSONObject;
@@ -27,11 +27,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginRetailerActivity extends AppCompatActivity {
 
 	String filename = "logincredentials.aut";
 	static String textAddress;
@@ -55,9 +53,13 @@ public class LoginActivity extends AppCompatActivity {
 		signup = (TextView) findViewById(R.id.signupbutton);
 		retailer = (TextView) findViewById(R.id.retailerbutton);
 
+		signup.setVisibility(View.INVISIBLE);
+
 		email.setHint("Email");
 		password.setHint("Password");
 		address.setHint("Server Address");
+
+		retailer.setText(R.string.userlogin);
 
 		try {
 			FileInputStream fileInputStream = openFileInput(filename);
@@ -89,8 +91,9 @@ public class LoginActivity extends AppCompatActivity {
 				final String textPass = password.getText().toString();
 				textAddress = address.getText().toString();
 
-				RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
-				String URL = textAddress+"/login";
+				RequestQueue requestQueue = Volley.newRequestQueue(LoginRetailerActivity.this);
+				String URL = textAddress+"/retailerLogin";
+				Log.i("Kaldon-urllogin", URL);
 				JSONObject jsonObject = new JSONObject();
 				try {
 					jsonObject.put("email", textEmail);
@@ -106,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
 					@Override
 					public void onSuccessResponse(String result) {
 						Log.i("KALDONi", result);
-						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+						Intent intent = new Intent(LoginRetailerActivity.this, MainRetailerActivity.class);
 						intent.putExtra("email", textEmail);
 						intent.putExtra("address", textAddress);
 						startActivity(intent);
@@ -134,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
 
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						Toast toast = Toast.makeText(LoginActivity.this,
+						Toast toast = Toast.makeText(LoginRetailerActivity.this,
 								"Could not login, please try again.",
 								Toast.LENGTH_LONG);
 
@@ -150,8 +153,7 @@ public class LoginActivity extends AppCompatActivity {
 		signup.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				textAddress=address.getText().toString();
-				Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+				Intent intent = new Intent(LoginRetailerActivity.this, SignupActivity.class);
 				startActivity(intent);
 
 			}
@@ -160,20 +162,21 @@ public class LoginActivity extends AppCompatActivity {
 		retailer.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(LoginActivity.this, LoginRetailerActivity.class);
+				Intent intent = new Intent(LoginRetailerActivity.this, LoginActivity.class);
 				startActivity(intent);
 				finish();
 			}
-		});
 
 
+	});
 	}
 
 	void loginSuccessful() {
 		Log.d("John", "Logged in!");
-		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+		Intent intent = new Intent(getApplicationContext(), MainRetailerActivity.class);
 		startActivity(intent);
 		finish();
 	}
 
 }
+

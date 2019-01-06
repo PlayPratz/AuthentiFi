@@ -6,8 +6,11 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.pratz.authentifi.RetailerActivity.MainRetailerActivity;
 import com.pratz.authentifi.SellActivity.SellActivity;
 import com.pratz.authentifi.User.LoginActivity;
 
@@ -41,6 +45,7 @@ public class ProductPage extends AppCompatActivity {
 
 	String prodCode;
 
+	View view;
 	//int i=3;
 	//ImageButton testButton, testButton1;
 
@@ -48,21 +53,23 @@ public class ProductPage extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_product_page);
+		setContentView(R.layout.progressbar_loading);
+
+		view = View.inflate(ProductPage.this, R.layout.activity_product_page, null);
 
 		//Get UI elements
-		productCode = (TextView) findViewById(R.id.product_code);
-		productBrand = (TextView) findViewById(R.id.product_brand);
-		productName = (TextView) findViewById(R.id.product_name);
-		productDescription = (TextView) findViewById(R.id.product_description);
-		productManufacturer = (TextView) findViewById(R.id.product_manufacturer);
-		productStatus = (TextView) findViewById(R.id.product_status);
-		productStatusDescription = (TextView) findViewById(R.id.product_status_description);
-		productImage = (ImageButton) findViewById(R.id.product_image);
-		productStatusImage = (ImageButton) findViewById(R.id.product_status_image);
-		productOwnerLayout = (ConstraintLayout) findViewById(R.id.owner_section);
+		productCode = (TextView) view.findViewById(R.id.product_code);
+		productBrand = (TextView) view.findViewById(R.id.product_brand);
+		productName = (TextView) view.findViewById(R.id.product_name);
+		productDescription = (TextView) view.findViewById(R.id.product_description);
+		productManufacturer = (TextView) view.findViewById(R.id.product_manufacturer);
+		productStatus = (TextView) view.findViewById(R.id.product_status);
+		productStatusDescription = (TextView) view.findViewById(R.id.product_status_description);
+		productImage = (ImageButton) view.findViewById(R.id.product_image);
+		productStatusImage = (ImageButton) view.findViewById(R.id.product_status_image);
+		productOwnerLayout = (ConstraintLayout) view.findViewById(R.id.owner_section);
 
-		productSell = (ImageButton) findViewById(R.id.product_sell_image);
+		productSell = (ImageButton) view.findViewById(R.id.product_sell_image);
 
 
 
@@ -80,6 +87,7 @@ public class ProductPage extends AppCompatActivity {
 			public void onClick(View v) {
 				Intent intent = new Intent(ProductPage.this, SellActivity.class);
 				intent.putExtra("code", prodCode);
+				intent.putExtra("retailer", getIntent().getExtras().getString("retailer"));
 				startActivity(intent);
 				finish();
 			}
@@ -95,7 +103,7 @@ public class ProductPage extends AppCompatActivity {
 
 
 		//close button
-		ImageButton closeButton = (ImageButton) findViewById(R.id.close);
+		ImageButton closeButton = (ImageButton) view.findViewById(R.id.close);
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -133,7 +141,12 @@ public class ProductPage extends AppCompatActivity {
 	private void getData() throws JSONException {
 
 		RequestQueue requestQueue = Volley.newRequestQueue(ProductPage.this);
-		String URL = MainActivity.address+"/scan";
+		String address;
+		if(MainActivity.address==null)
+			address=MainRetailerActivity.address;
+		else
+			address=MainActivity.address;
+		String URL = address+"/scan";
 		final JSONObject jsonBody = new JSONObject();
 		jsonBody.put("code", prodCode);
 		final String requestBody = jsonBody.toString();
@@ -144,6 +157,7 @@ public class ProductPage extends AppCompatActivity {
 					JSONObject jsonObject = new JSONObject(result);
 
 					//Set data
+
 					productName.setText(jsonObject.getString("model"));
 					productBrand.setText(jsonObject.getString("name"));
 					productDescription.setText(jsonObject.getString("description"));
@@ -165,6 +179,7 @@ public class ProductPage extends AppCompatActivity {
 							productStolen();
 					}
 
+					setContentView(view);
 
 				} catch (JSONException e) {
 					e.printStackTrace();

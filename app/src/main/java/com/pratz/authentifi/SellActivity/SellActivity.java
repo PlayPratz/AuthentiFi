@@ -1,17 +1,13 @@
 package com.pratz.authentifi.SellActivity;
 
-import android.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
 
 import com.pratz.authentifi.R;
 
@@ -69,7 +65,10 @@ public class SellActivity extends AppCompatActivity {
 
 			default:
 				nextButton.setVisibility(View.INVISIBLE);
+				Bundle bundle = new Bundle();
+				bundle.putString("retailer", getIntent().getExtras().getString("retailer"));
 				fragment = new SellStep2();
+				fragment.setArguments(bundle);
 		}
 
 		i++;

@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#1fa667</color>
     <color name="colorPrimaryDark">#009688</color>
-    <color name="colorAccent">#d50000</color>
+    <color name="colorAccent">#b71c1c</color>
     <color name="LightGray">#eeeeee</color>
     <color name="MidGray">@android:color/darker_gray</color>
     <color name="DarkGray">#616161</color>

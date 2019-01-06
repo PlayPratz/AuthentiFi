@@ -44,7 +44,7 @@ import java.util.ArrayList;
 
 public class AssetsFragment extends Fragment {
 
-	View view=null;
+	View view;
 	List<Asset> assetList = new ArrayList<Asset>();
 	RecyclerView.Adapter mAdapter;
 
@@ -66,70 +66,13 @@ public class AssetsFragment extends Fragment {
 	}
 
 	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	public void onResume() {
+		super.onResume();
+		Log.i("Yolo", "Resumed!");
 
 
-		Asset asset = new Asset("somecode", "Nike", "Cloudfoam");
-		assetList.add(0, asset);
-
-		Log.i("Yolo","Activity created");
-		View view = getView();
-
-		//RecyclerView
-		mRecyclerView = (RecyclerView) view.findViewById(R.id.assetrecycler);
-
-		// use this setting to improve performance if you know that changes
-		// in content do not change the layout size of the RecyclerView
-		mRecyclerView.setHasFixedSize(true);
-
-		// use a linear layout manager
-		RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-		mRecyclerView.setLayoutManager(mLayoutManager);
-
-		// specify an adapter (see also next example)
-		//RecyclerView.Adapter mAdapter = new MyAdapter(shit);
-
-		//Lets hope clicking works
-		mAdapter = new AssetAdapter(assetList);
-
-		mRecyclerView.setAdapter(mAdapter);
-
-
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-				((LinearLayoutManager) mLayoutManager).getOrientation());
-		mRecyclerView.addItemDecoration(dividerItemDecoration);
-
-
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
-
-
-		View view = inflater.inflate(R.layout.fragment_assets, container, false);
-
-		mRecyclerView = (RecyclerView) view.findViewById(R.id.assetrecycler);
-		progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 		progressBar.setVisibility(View.VISIBLE);
 		mRecyclerView.setVisibility(View.INVISIBLE);
-
-
-		buyItem = view.findViewById(R.id.buy);
-
-		buyItem.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.i("Kaldon_buyclick", "worked?");
-				Intent intent = new Intent(getContext(), BuyActivity.class);
-				ActivityOptions options =
-						ActivityOptions.makeCustomAnimation(getContext(), R.anim.slide_in_right, R.anim.slide_out_left);
-				startActivity(intent, options.toBundle());
-			}
-		});
-
-		Log.d("yolo hi", "Asset got createView()");
 
 		RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
@@ -180,6 +123,73 @@ public class AssetsFragment extends Fragment {
 				toast.show();
 			}
 		});
+
+
+	}
+
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+
+		Asset asset = new Asset("somecode", "Nike", "Cloudfoam");
+		assetList.add(0, asset);
+
+		Log.i("Yolo","Activity created");
+		View view = getView();
+
+		//RecyclerView
+		mRecyclerView = (RecyclerView) view.findViewById(R.id.assetrecycler);
+
+		// use this setting to improve performance if you know that changes
+		// in content do not change the layout size of the RecyclerView
+		mRecyclerView.setHasFixedSize(true);
+
+		// use a linear layout manager
+		RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+		mRecyclerView.setLayoutManager(mLayoutManager);
+
+		// specify an adapter (see also next example)
+		//RecyclerView.Adapter mAdapter = new MyAdapter(shit);
+
+		//Lets hope clicking works
+		mAdapter = new AssetAdapter(assetList);
+
+		mRecyclerView.setAdapter(mAdapter);
+
+
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+				((LinearLayoutManager) mLayoutManager).getOrientation());
+		mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	                         Bundle savedInstanceState) {
+
+
+		View view = inflater.inflate(R.layout.fragment_assets, container, false);
+
+
+		mRecyclerView = (RecyclerView) view.findViewById(R.id.assetrecycler);
+		progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+
+		buyItem = (Button) view.findViewById(R.id.buy);
+
+		buyItem.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("Kaldon_buyclick", "worked?");
+				Intent intent = new Intent(getContext(), BuyActivity.class);
+				ActivityOptions options =
+						ActivityOptions.makeCustomAnimation(getContext(), R.anim.slide_in_right, R.anim.slide_out_left);
+				startActivity(intent, options.toBundle());
+			}
+		});
+
+		Log.d("yolo hi", "Asset got createView()");
 
 
 		return view;

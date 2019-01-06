@@ -18,8 +18,12 @@
 
     <string name="signup">New user? <u>Sign Up</u></string>
     <string name="retailerlogin">Retailer Login</string>
+    <string name="userlogin">User Login</string>
 
     <string name="sell_step1">1. Seller selects the product and gets a QR code</string>
     <string name="sell_step2">2. Buyer scans the same QR code</string>
     <string name="sell_step3">3. Buyer scans the product to be bought</string>
+
+    <string name="assets_head">My Assets</string>
+    <string name="profile_head">My Profile</string>
 </resources>

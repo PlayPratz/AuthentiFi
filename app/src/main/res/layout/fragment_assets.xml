@@ -18,9 +18,23 @@
         android:text="BUY ASSET"
         android:textColor="@color/LightGray"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!--TextView
+        android:id="@+id/assets_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:text="@string/assets"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/assetrecycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buy"
+        android:textColor="@color/DarkGray"/-->
 
 
 
@@ -40,22 +54,6 @@
         android:background="@color/BackgroundLight">
 
     </android.support.v7.widget.RecyclerView>
-
-
-
-        <SearchView
-            android:id="@+id/searchView"
-            android:layout_width="368dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/LightGray"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </SearchView>
 
 
     <ProgressBar
