@@ -2,6 +2,7 @@ package com.pratz.authentifi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Image;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -69,7 +70,9 @@ public class ProductPage extends AppCompatActivity {
 		productStatusImage = (ImageButton) view.findViewById(R.id.product_status_image);
 		productOwnerLayout = (ConstraintLayout) view.findViewById(R.id.owner_section);
 
+		productStolen = (ImageButton) view.findViewById(R.id.product_stolen_image);
 		productSell = (ImageButton) view.findViewById(R.id.product_sell_image);
+
 
 
 
@@ -90,6 +93,40 @@ public class ProductPage extends AppCompatActivity {
 				intent.putExtra("retailer", getIntent().getExtras().getString("retailer"));
 				startActivity(intent);
 				finish();
+			}
+		});
+
+		productStolen.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				RequestQueue requestQueue = Volley.newRequestQueue(ProductPage.this);
+				JSONObject jsonObject = new JSONObject();
+				try {
+					jsonObject.put("code", prodCode);
+					jsonObject.put("email", MainActivity.email);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				String URL = MainActivity.address+"/stolen";
+				ConnectionManager.sendData(jsonObject.toString(), requestQueue, URL, new ConnectionManager.VolleyCallback() {
+					@Override
+					public void onSuccessResponse(String result) {
+						Toast toast = Toast.makeText(ProductPage.this,
+								"Product has been reported as stolen.",
+								Toast.LENGTH_LONG);
+
+						toast.show();
+
+						finish();
+					}
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+
+					}
+				});
 			}
 		});
 
